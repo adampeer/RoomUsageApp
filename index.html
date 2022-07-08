@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+        <meta name="mobile-web-app-capable" content="yes" />
+        <title>Room Usage</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.light_green-amber.min.css" />
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Cabin|Gloria+Hallelujah" rel="stylesheet">
+        <script scr="https://api.opencagedata.com/geocode/v1/json?q=LAT+LNG&key=abd1006f579548b4b0a6c92487fe28a7" ></script>
+        
+    </head>
+
+    <body>
+        <!-- Always shows a header, even in smaller screens. -->
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <!-- Title -->
+                    <span class="mdl-layout-title"><strong>New Room Observation</strong></span>
+                    <!-- Add spacer, to align navigation to the right -->
+                    <div class="mdl-layout-spacer"></div>
+                </div>
+            </header>
+            <div class="mdl-layout__drawer">
+                <nav class="mdl-navigation">
+                    <a class="mdl-navigation__link" href="">New Observation</a>
+                    <a class="mdl-navigation__link" href="observations.html">Observations</a>
+                    <a class="mdl-navigation__link" href="occupancy.html">Occupancy</a>
+                    <a class="mdl-navigation__link" href="buildingStats.html">Building Stats</a>
+                </nav>
+            </div>
+            <main class="mdl-layout__content">
+                <div class="page-content">
+
+                    <div class="mdl-grid">
+                        <div class="mdl-cell mdl-cell--4-col">
+                            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                                <tbody id="observationForm">
+
+                                    <!-- Fill this tag with the form you want the user to see -->
+                                    <!-- or just use ours, below. -->
+
+                                    <tr>
+                                        <td>
+                                            <div class="mdl-textfield mdl-js-textfield">
+                                                <input class="mdl-textfield__input" type="text" id="address">
+                                                <label class="mdl-textfield__label" for="address">Building address...</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="useAddress">
+                                                <input type="checkbox" id="useAddress" onchange="determineAddress(this)" class="mdl-checkbox__input">
+                                                <span class="mdl-checkbox__label">Automatically determine my address</span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="mdl-textfield mdl-js-textfield">
+                                                <input class="mdl-textfield__input" type="text" id="roomNumber">
+                                                <label class="mdl-textfield__label" for="roomNumber">Room number</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="mdl-data-table__cell--non-numeric">
+                                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="lights">
+                                                
+                                                <input type="checkbox" id="lights" class="mdl-switch__input" checked>
+                                                <span class="mdl-switch__label">Lights</span>
+                                                <img src="http://icons-for-free.com/free-icons/png/512/1511312.png" align="right" width="25" height="25">
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="mdl-data-table__cell--non-numeric">
+                                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="heatingCooling">
+                                                <input type="checkbox" id="heatingCooling" class="mdl-switch__input" checked>
+                                                <span class="mdl-switch__label">Heating / cooling</span>
+                                                <img src="data:image/png;base64,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" align="right" width="25" height="25">
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="mdl-textfield mdl-js-textfield">
+                                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="seatsUsed">
+                                                <label class="mdl-textfield__label" for="seatsUsed">Number of seats in use</label>
+                                                <span class="mdl-textfield__error">Input is not a number!</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="mdl-textfield mdl-js-textfield">
+                                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="seatsTotal">
+                                                <label class="mdl-textfield__label" for="seatsTotal">Number of available seats</label>
+                                                <span class="mdl-textfield__error">Input is not a number!</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="mdl-data-table__cell--non-numeric">
+                                            <div id="errorMessages"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <!-- Accent-colored raised button with ripple -->
+                                            <button onclick="saveFunction()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                              Save
+                                            </button>
+
+                                            &nbsp;
+                                            <!-- Accent-colored raised button with ripple -->
+                                            <button onclick="clearFunction()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                              Clear
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mdl-layout-spacer"></div>
+                    </div>
+                </div>
+                <div id="toast" class="mdl-js-snackbar mdl-snackbar">
+                    <div class="mdl-snackbar__text"></div>
+                    <button class="mdl-snackbar__action" type="button"></button>
+                </div>
+            </main>
+        </div>
+        <!-- you will need a script tag to get access to reverse geocoding here -->
+        <script src="js/utility.js"></script>
+        <script src="js/shared.js"></script>
+        <script src="js/formView.js"></script>
+    </body>
+</html>
